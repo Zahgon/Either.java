@@ -7,114 +7,108 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * A useful class to wrap operations that may throw exceptions and convert 
+ * A useful class to wrap operations that may throw exceptions and convert
  *  exception-handling try-catch code into value-handling code, similar to
  *  "railway-oriented programming". This is especially useful when dealing
  *  with Java Stream methods, which accept the various java.util.function
- *  "functional interfaces", none of which make allowances for checked 
+ *  "functional interfaces", none of which make allowances for checked
  *  exceptions.
  */
 public abstract class Result<R> {
 
-	/**
-	 * The "factory function" entry point for using `Result`; effectively acts
-	 *  like a try-catch block. If the `resultSupplier` method throws an 
-	 *  exception, an `Err` will be returned containing that exception. 
-	 *  Otherwise, an `Ok<R>` will be returned containing the return value
-	 *  of `resultSupplier`.
-	 * @param resultSupplier
-	 * @return an `Err<R>` if an exception was thrown; otherwise, an `Ok<R>`
-	 */
-    public static <R> Result<R> attempt(ExceptionThrowingSupplier<R> resultSupplier){
-        try {
-            R resultValue = resultSupplier.get();
-            return Result.ok(resultValue);
-        } catch (Exception e){
-            return Result.err(e);
-        }
+    /**
+     * The "factory function" entry point for using `Result`; effectively acts
+     *  like a try-catch block. If the `resultSupplier` method throws an
+     *  exception, an `Err` will be returned containing that exception.
+     *  Otherwise, an `Ok<R>` will be returned containing the return value
+     *  of `resultSupplier`.
+     * @param resultSupplier
+     * @return an `Err<R>` if an exception was thrown; otherwise, an `Ok<R>`
+     */
+    public static <R> Result<R> attempt(ExceptionThrowingSupplier<R> resultSupplier) {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-	/**
-	 * Factory method for directly creating an `Err<R>` from an exception.
-	 * @param e the exception to wrap in an `Err`
-	 */
-    public static <R> Result<R> err(Exception e){ return new Err<>(e); }
-	/**
-	 * Factory method for directly creating an `Ok<R>` from a value.
-	 * @param result the result value to wrap in an `Ok`
-	 */
-    public static <R> Result<R> ok(R result){ return new Ok<>(result); }
+    /**
+     * Factory method for directly creating an `Err<R>` from an exception.
+     * @param e the exception to wrap in an `Err`
+     */
+    public static <R> Result<R> err(Exception e) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
 
-	/**
-	 * @return the wrapped exception if this is an `Err`; otherwise, throws a NoSuchElementException (ironically).
-	 * @throws NoSuchElementException if this is an `Ok` 
-	 */
+    /**
+     * Factory method for directly creating an `Ok<R>` from a value.
+     * @param result the result value to wrap in an `Ok`
+     */
+    public static <R> Result<R> ok(R result) {
+        throw new UnsupportedOperationException("STUB: not implemented");
+    }
+
+    /**
+     * @return the wrapped exception if this is an `Err`; otherwise, throws a NoSuchElementException (ironically).
+     * @throws NoSuchElementException if this is an `Ok`
+     */
     public abstract Exception getException();
 
-	/**
-	 * @return the wrapped value if this is an `Ok`; otherwise, throws a NoSuchElementException.
-	 * @throws NoSuchElementException if this is an `Err` 
-	 */
+    /**
+     * @return the wrapped value if this is an `Ok`; otherwise, throws a NoSuchElementException.
+     * @throws NoSuchElementException if this is an `Err`
+     */
     public abstract R getResult();
 
     /**
      * @return the wrapped value if this is an `Ok`, otherwise, the supplied other value.
      */
     public R getOrElse(R other) {
-        return fold(
-            exception -> other,
-            Function.identity()
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the wrapped value if this is an `Ok`, otherwise, the value supplied by `otherSupplier`.
      */
     public R getOrElse(Supplier<R> otherSupplier) {
-        return fold(
-                exception -> otherSupplier.get(),
-                Function.identity()
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
      * @return the result as an Optional.
      */
     public Optional<R> toOptional() {
-        return fold(
-            exception -> Optional.empty(),
-            Optional::ofNullable
-        );
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     public abstract boolean isErr();
+
     public abstract boolean isOk();
 
-	/**
-	 * A convenience method for taking an exception and a value and transforming
-	 * both to a common type `T`, returning the result of whichever 
-	 * transformation is applicable based on whether this is an `Err` or an `Ok`.
-	 * @param transformException a method that takes an exception and returns a value of type `T`, useful for handling "fallback" cases.
-	 * @param transformValue a method that takes the wrapped value and returns a value of type `T`
-	 * @return the return value of `transformValue` if this is an `Ok`, otherwise, the return value of `transformException`
-	 */
-    public abstract <T> T fold(Function<Exception,T> transformException, Function<R,T> transformValue);
-	/**
-	 * Applies `transformValue` to the wrapped value and wraps the result in an 
-	 * `Ok<T>` for further operations *if* this is an `Ok`; otherwise returns 
-	 * the same `Err`, but with the appropriate type so as not to disrupt a 
-	 * "chain" of operations.
-	 * @param transformValue
-	 * @return an `Ok` containing the result of applying transformValue to the wrapped result value if this is an `Ok`, otherwise, the same `Err` but with a friendly type signature.
-	 */
-    public abstract <T> Result<T> map(ExceptionThrowingFunction<R,T> transformValue);
-	/**
-	 * Applies a `Result`-returning function to the wrapped value and returns 
-	 * that if this is an `Ok<T>`; otherwise returns the same `Err`, but with 
-	 * the appropriate type so as not to disrupt a "chain" of operations.
-	 * @param transformValue
-	 * @return the return value from transformValue if this is an `Ok`, otherwise, the same `Err` but with a friendly type signature.
-	 */
+    /**
+     * A convenience method for taking an exception and a value and transforming
+     * both to a common type `T`, returning the result of whichever
+     * transformation is applicable based on whether this is an `Err` or an `Ok`.
+     * @param transformException a method that takes an exception and returns a value of type `T`, useful for handling "fallback" cases.
+     * @param transformValue a method that takes the wrapped value and returns a value of type `T`
+     * @return the return value of `transformValue` if this is an `Ok`, otherwise, the return value of `transformException`
+     */
+    public abstract <T> T fold(Function<Exception, T> transformException, Function<R, T> transformValue);
+
+    /**
+     * Applies `transformValue` to the wrapped value and wraps the result in an
+     * `Ok<T>` for further operations *if* this is an `Ok`; otherwise returns
+     * the same `Err`, but with the appropriate type so as not to disrupt a
+     * "chain" of operations.
+     * @param transformValue
+     * @return an `Ok` containing the result of applying transformValue to the wrapped result value if this is an `Ok`, otherwise, the same `Err` but with a friendly type signature.
+     */
+    public abstract <T> Result<T> map(ExceptionThrowingFunction<R, T> transformValue);
+
+    /**
+     * Applies a `Result`-returning function to the wrapped value and returns
+     * that if this is an `Ok<T>`; otherwise returns the same `Err`, but with
+     * the appropriate type so as not to disrupt a "chain" of operations.
+     * @param transformValue
+     * @return the return value from transformValue if this is an `Ok`, otherwise, the same `Err` but with a friendly type signature.
+     */
     public abstract <T> Result<T> flatMap(ExceptionThrowingFunction<R, Result<T>> transformValue);
 
     /**
@@ -127,144 +121,166 @@ public abstract class Result<R> {
     public abstract <X extends Throwable> R getOrElseThrow(Supplier<X> exceptionSupplier) throws X;
 
     /**
-	 * Runs the acceptsOkValue function if this is an `Ok` instead of an `Err`,
-	 * passing in the value that `Ok` wraps; otherwise, does nothing. Does not 
-	 * return a value. If you need to transform a `Result<T>`, use {@link #map}
-	 * or {@link #flatMap}.
-	 */
-	public abstract void ifOk(Consumer<R> acceptsOkValue);
+     * Runs the acceptsOkValue function if this is an `Ok` instead of an `Err`,
+     * passing in the value that `Ok` wraps; otherwise, does nothing. Does not
+     * return a value. If you need to transform a `Result<T>`, use {@link #map}
+     * or {@link #flatMap}.
+     */
+    public abstract void ifOk(Consumer<R> acceptsOkValue);
 
-	/**
-	 * Runs the `errorHandler` function with the wrapped exception if this is an
-	 * `Err`, or else runs the `okHandler` function with the wrapped value if 
-	 * this is an `Ok`.  Does not return a value. If you need to extract a value 
-	 * using a pair of "extractors", see {@link #fold}.
-	 */
-	public abstract void run(Consumer<Exception> errorHandler, Consumer<R> okHandler);
+    /**
+     * Runs the `errorHandler` function with the wrapped exception if this is an
+     * `Err`, or else runs the `okHandler` function with the wrapped value if
+     * this is an `Ok`.  Does not return a value. If you need to extract a value
+     * using a pair of "extractors", see {@link #fold}.
+     */
+    public abstract void run(Consumer<Exception> errorHandler, Consumer<R> okHandler);
 
     public static class Err<R> extends Result<R> {
+
         private Exception ex;
+
         private Err(Exception e) {
             this.ex = e;
         }
 
         @Override
-        public Exception getException() { return this.ex; }
-        @Override
-        public R getResult() { throw new NoSuchElementException("Tried to getResult from an Err"); }
+        public Exception getException() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
         @Override
-        public boolean isErr() { return true; }
+        public R getResult() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
         @Override
-        public boolean isOk() { return false; }
+        public boolean isErr() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isOk() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
         @Override
         public <T> T fold(Function<Exception, T> transformException, Function<R, T> transformValue) {
-            return transformException.apply(this.ex);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public <T> Result<T> map(ExceptionThrowingFunction<R, T> transformRight) {
-            return Result.<T>err(this.ex);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
+
         @Override
         public <T> Result<T> flatMap(ExceptionThrowingFunction<R, Result<T>> transformValue) {
-            return Result.<T>err(this.ex);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public <X extends Throwable> R getOrElseThrow(Supplier<X> exceptionSupplier) throws X {
-            throw exceptionSupplier.get();
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
-		public void ifOk(Consumer<R> acceptsOkValue) { /* no-op */ }
-		@Override
-		public void run(Consumer<Exception> errorHandler, Consumer<R> okHandler) {
-			errorHandler.accept(this.ex);
-		}
-
-        @Override
-        public int hashCode(){ return this.ex.hashCode(); }
-
-		/**
-		 * An `Err` object is equal to another object if that other object is
-		 *  another `Err` instance containing an exception that is equal to this 
-		 *  instance's exception.
-		 * */
-        @Override
-        public boolean equals(Object other){
-            if (other instanceof Err<?>){
-                final Err<?> otherAsErr = (Err<?>)other;
-                return this.ex.equals(otherAsErr.ex);
-            } else {
-                return false;
-            }
+        public void ifOk(Consumer<R> acceptsOkValue) {
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
+        @Override
+        public void run(Consumer<Exception> errorHandler, Consumer<R> okHandler) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        /**
+         * An `Err` object is equal to another object if that other object is
+         *  another `Err` instance containing an exception that is equal to this
+         *  instance's exception.
+         */
+        @Override
+        public boolean equals(Object other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
     }
+
     public static class Ok<R> extends Result<R> {
+
         private R resultValue;
+
         private Ok(R value) {
             this.resultValue = value;
         }
 
         @Override
-        public Exception getException() { throw new NoSuchElementException("Tried to getException from an Ok"); }
-        @Override
-        public R getResult() { return resultValue; }
+        public Exception getException() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
         @Override
-        public boolean isErr() { return false; }
+        public R getResult() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
         @Override
-        public boolean isOk() { return true; }
+        public boolean isErr() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        @Override
+        public boolean isOk() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
         @Override
         public <T> T fold(Function<Exception, T> transformException, Function<R, T> transformValue) {
-            return transformValue.apply(this.resultValue);
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
+
         @Override
         public <T> Result<T> map(ExceptionThrowingFunction<R, T> transformValue) {
-            return Result.attempt(() -> transformValue.apply(this.resultValue));
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
+
         @Override
         public <T> Result<T> flatMap(ExceptionThrowingFunction<R, Result<T>> transformValue) {
-            try {
-                return transformValue.apply(this.resultValue);
-            } catch(Exception e) {
-                return new Err<T>(e);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
         public <X extends Throwable> R getOrElseThrow(Supplier<X> exceptionSupplier) throws X {
-            return resultValue;
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         @Override
-		public void ifOk(Consumer<R> acceptsOkValue) {
-			acceptsOkValue.accept(this.resultValue);
-		}
-		@Override
-		public void run(Consumer<Exception> errorHandler, Consumer<R> okHandler) {
-			okHandler.accept(this.resultValue);
-		}
+        public void ifOk(Consumer<R> acceptsOkValue) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
 
         @Override
-        public int hashCode(){ return this.resultValue.hashCode(); }
-		/**
-		 * An `Ok` object is equal to another object if that other object is
-		 *  another `Ok` instance containing a value that is equal to this 
-		 *  instance's value.
-		 * */
+        public void run(Consumer<Exception> errorHandler, Consumer<R> okHandler) {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
         @Override
-        public boolean equals(Object other){
-            if (other instanceof Ok<?>){
-                final Ok<?> otherAsOk = (Ok<?>)other;
-                return this.resultValue.equals(otherAsOk.resultValue);
-            } else {
-                return false;
-            }
+        public int hashCode() {
+            throw new UnsupportedOperationException("STUB: not implemented");
+        }
+
+        /**
+         * An `Ok` object is equal to another object if that other object is
+         *  another `Ok` instance containing a value that is equal to this
+         *  instance's value.
+         */
+        @Override
+        public boolean equals(Object other) {
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
 }

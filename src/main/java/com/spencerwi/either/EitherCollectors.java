@@ -13,8 +13,8 @@ import java.util.stream.Collector;
  * @param <L> the "left side" type.
  * @param <R> the "right side type.
  */
+public class EitherCollectors<L, R> implements Collector<Either<L, R>, EitherCollectors.EitherAccumulator<L, R>, Either<List<L>, List<R>>> {
 
-public class EitherCollectors<L,R> implements Collector< Either<L,R>, EitherCollectors.EitherAccumulator<L,R>, Either<List<L>, List<R>> > {
     private final boolean leftBiased;
 
     /**
@@ -24,8 +24,8 @@ public class EitherCollectors<L,R> implements Collector< Either<L,R>, EitherColl
      * at least one left Either object.
      * @return Either<List<L>, List<R>>
      */
-    public static <L,R> Collector<Either<L,R>, ?, Either<List<L>, List<R>>> toLeftBiased() {
-        return new EitherCollectors<>(true);
+    public static <L, R> Collector<Either<L, R>, ?, Either<List<L>, List<R>>> toLeftBiased() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     /**
@@ -35,8 +35,8 @@ public class EitherCollectors<L,R> implements Collector< Either<L,R>, EitherColl
      * at least one right Either object.
      * @return Either<List<L>, List<R>>
      */
-    public static <L,R> Collector<Either<L,R>, ?, Either<List<L>, List<R>>> toRightBiased() {
-        return new EitherCollectors<>(false);
+    public static <L, R> Collector<Either<L, R>, ?, Either<List<L>, List<R>>> toRightBiased() {
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     private EitherCollectors(boolean leftBiased) {
@@ -45,32 +45,35 @@ public class EitherCollectors<L,R> implements Collector< Either<L,R>, EitherColl
 
     @Override
     public Supplier<EitherAccumulator<L, R>> supplier() {
-        return () -> new EitherAccumulator<>(leftBiased);
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public BiConsumer<EitherAccumulator<L, R>, Either<L, R>> accumulator() {
-        return EitherAccumulator::add;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public BinaryOperator<EitherAccumulator<L, R>> combiner() {
-        return EitherAccumulator::append;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Function<EitherAccumulator<L, R>, Either<List<L>, List<R>>> finisher() {
-        return EitherAccumulator::finisher;
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
     @Override
     public Set<Characteristics> characteristics() {
-        return Collections.unmodifiableSet(EnumSet.of(Characteristics.CONCURRENT));
+        throw new UnsupportedOperationException("STUB: not implemented");
     }
 
-    static class EitherAccumulator<L,R> {
+    static class EitherAccumulator<L, R> {
+
         private final List<L> lefts;
+
         private final List<R> rights;
+
         private final boolean leftBiased;
 
         EitherAccumulator(boolean leftBiased) {
@@ -79,23 +82,16 @@ public class EitherCollectors<L,R> implements Collector< Either<L,R>, EitherColl
             this.rights = new ArrayList<>();
         }
 
-        void add(Either<L,R> e) {
-            e.run(lefts::add, rights::add);
+        void add(Either<L, R> e) {
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
-        EitherAccumulator<L,R> append(EitherAccumulator<L,R> accumulator2) {
-            lefts.addAll(accumulator2.lefts);
-            rights.addAll(accumulator2.rights);
-            return this;
+        EitherAccumulator<L, R> append(EitherAccumulator<L, R> accumulator2) {
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
 
         Either<List<L>, List<R>> finisher() {
-            if(leftBiased) {
-                return !lefts.isEmpty() || rights.isEmpty()  ? Either.left(lefts) : Either.right(rights);
-            } else {
-                return !rights.isEmpty() || lefts.isEmpty() ? Either.right(rights) : Either.left(lefts);
-            }
+            throw new UnsupportedOperationException("STUB: not implemented");
         }
     }
-
 }

@@ -75,3 +75,8 @@ com_crashlytics_export_strings.xml
 /.classpath
 /.project
 /.settings
+
+.aider*
+logs/
+.commit0_scripts/
+.github/workflows/
